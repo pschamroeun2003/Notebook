@@ -88,7 +88,7 @@
     </div>
 
     <div v-if="showModal" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
+        <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-11/12 sm:w-1/2 md:w-1/3 lg:w-1/4">
             <h2 class="text-2xl font-semibold mb-4">Edit Note</h2>
             <form @submit.prevent="updateNote">
                 <div class="mb-4">
@@ -123,7 +123,7 @@
     </div>
 
     <div v-if="showModalRead" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
+        <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-11/12 sm:w-1/2 md:w-1/3 lg:w-1/4">
             <h2 class="text-2xl font-semibold mb-4">Read Note</h2>
             <div class="mb-4">
                 <h3 class="text-xl underline">{{ selectedNote.title }}</h3>
@@ -137,7 +137,7 @@
             <div class="flex justify-end">
                 <button @click="closeModal"
                     class="ml-2 bg-gray-500 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 py-2 px-4 rounded-lg">
-                    Cancel
+                    Close
                 </button>
             </div>
         </div>
