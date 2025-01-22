@@ -37,49 +37,53 @@
 
 
 
-            <table class="w-full table-auto mt-4 border-collapse">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="px-4 py-2 text-left">Title</th>
-                        <th class="px-4 py-2 text-left">Content</th>
-                        <th class="px-4 py-2 text-left">Status</th>
-                        <th class="px-4 py-2 text-left">Create At</th>
-                        <th class="px-4 py-2 text-left">Update At</th>
-                        <th class="px-4 py-2 text-left">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(note, index) in filteredNotes" :key="note.id" class="border-b">
-                        <td class="px-4 py-2">{{ note.title }}</td>
-                        <td class="px-4 py-2">{{ truncateContent(note.content, 15) }}</td>
-                        <td class="px-4 py-2">
-                            <span :class="{
-                                'bg-green-700 text-white px-2 py-1 backdrop-blur-sm bg-opacity-50 rounded-sm': note.status === true,
-                                'bg-red-700 text-white px-2 py-1 backdrop-blur-sm bg-opacity-50 rounded-sm': note.status === false
-                            }">
-                                {{ note.status ? 'Active' : 'Inactive' }}
-                            </span>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto mt-4 border-collapse">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="px-4 py-2 text-left">Title</th>
+                            <th class="px-4 py-2 text-left">Content</th>
+                            <th class="px-4 py-2 text-left">Status</th>
+                            <th class="px-4 py-2 text-left">Create At</th>
+                            <th class="px-4 py-2 text-left">Update At</th>
+                            <th class="px-4 py-2 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(note, index) in filteredNotes" :key="note.id" class="border-b">
+                            <td class="px-4 py-2">{{ note.title }}</td>
+                            <td class="px-4 py-2">{{ truncateContent(note.content, 15) }}</td>
+                            <td class="px-4 py-2">
+                                <span :class="{
+                                    'bg-green-700 text-white px-2 py-1 backdrop-blur-sm bg-opacity-50 rounded-sm': note.status === true,
+                                    'bg-red-700 text-white px-2 py-1 backdrop-blur-sm bg-opacity-50 rounded-sm': note.status === false
+                                }">
+                                    {{ note.status ? 'Active' : 'Inactive' }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-2">{{ formatDate(note.createdAt) }}</td>
+                            <td class="px-4 py-2">{{ formatDate(note.updatedAt) }}</td>
+                            <td class="px-4 py-2">
+                                <button @click="openReadModal(note)"
+                                    class="bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 py-2 px-4 rounded-lg mr-2">
+                                    Read
+                                </button>
+                                <button @click="openEditModal(index)"
+                                    class="bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 py-2 px-4 rounded-lg mr-2">
+                                    Edit
+                                </button>
+                                <button @click="deleteNote(index)"
+                                    class="bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 py-2 px-4 rounded-lg">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                        </td>
-                        <td class="px-4 py-2">{{ formatDate(note.createdAt) }}</td>
-                        <td class="px-4 py-2">{{ formatDate(note.updatedAt) }}</td>
-                        <td class="px-4 py-2">
-                            <button @click="openReadModal(note)"
-                                class="bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 py-2 px-4 rounded-lg mr-2">
-                                Read
-                            </button>
-                            <button @click="openEditModal(index)"
-                                class="bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 py-2 px-4 rounded-lg mr-2">
-                                Edit
-                            </button>
-                            <button @click="deleteNote(index)"
-                                class="bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 py-2 px-4 rounded-lg">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+
+
         </div>
     </div>
 
@@ -153,7 +157,7 @@ interface Note {
     createdAt: string;
     status: boolean;
     updatedAt: string;
-    userId: number; 
+    userId: number;
 }
 export default {
     data() {
@@ -176,14 +180,14 @@ export default {
             showModal: false,
             editingNoteId: null as number | null,
             showModalRead: false,
-            jwtToken: localStorage.getItem('jwtToken') || '', 
+            jwtToken: localStorage.getItem('jwtToken') || '',
             userId: localStorage.getItem('userId') || '',
         };
     },
     mounted() {
         this.fetchNotes();
     },
-    computed:{
+    computed: {
         filteredNotes() {
             return this.notes.filter(note => {
                 const matchesSearch = note.title.toLowerCase().includes(this.searchQuery.toLowerCase()) || note.content.toLowerCase().includes(this.searchQuery.toLowerCase());
@@ -265,7 +269,7 @@ export default {
                         icon: 'error',
                         confirmButtonText: 'OK',
                     });
-                    return; 
+                    return;
                 }
                 try {
                     const newNote = {
@@ -423,6 +427,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -32,7 +32,6 @@ namespace NoteTakingApp.Controllers
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                // Check if the username already exists
                 var existingUser  = await connection.QueryFirstOrDefaultAsync<User>(
                     "SELECT * FROM Users WHERE Username = @Username", new { Username = userDto.Username });
 
@@ -42,14 +41,10 @@ namespace NoteTakingApp.Controllers
                 {
                     Username = userDto.Username,
                     Email = userDto.Email,
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password) // Hash the password
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password)
                 };
-
-                // Insert the new user into the database
                 var insertQuery = "INSERT INTO Users (Username, Email, PasswordHash) OUTPUT INSERTED.Id VALUES (@Username, @Email, @PasswordHash)";
                 user.Id = await connection.ExecuteScalarAsync<int>(insertQuery, user); 
-
-                // Generate JWT Token for the registered user
                 var token = GenerateJwtToken(user);
                 var refreshToken = GenerateRefreshToken();
                 var userResponse = new UserResponseDTO
@@ -75,21 +70,13 @@ namespace NoteTakingApp.Controllers
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                // Fetch the user from the database using email
+              
                 var dbUser  = await connection.QueryFirstOrDefaultAsync<User>(
                     "SELECT * FROM Users WHERE Email = @Email", new { Email = userDto.Email });
-
-                // Check if the user exists and if the password is correct
                 if (dbUser  == null || !BCrypt.Net.BCrypt.Verify(userDto.Password, dbUser .PasswordHash))
                     return Unauthorized(new { status = false, message = "Invalid credentials" });
-
-                // Generate JWT Token for the logged-in user
                 var token = GenerateJwtToken(dbUser );
-                
-                // Generate Refresh Token
                 var refreshToken = GenerateRefreshToken();
-
-                // Prepare the response with user data and tokens
                 var userResponse = new UserResponseDTO
                 {
                     Id = dbUser .Id,
@@ -98,11 +85,9 @@ namespace NoteTakingApp.Controllers
                     Token = token,
                     RefreshToken = refreshToken 
                 };
-
                 return Ok(new { status = true, user = userResponse });
             }
         }
-
         private string GenerateJwtToken(User user)
         {
             var key = _config["Jwt:Key"];
@@ -111,7 +96,6 @@ namespace NoteTakingApp.Controllers
             {
                 throw new ArgumentException("JWT Key is missing in configuration.");
             }
-
             var creds = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)), SecurityAlgorithms.HmacSha256);
 
             var claims = new[] {

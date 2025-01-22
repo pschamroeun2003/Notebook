@@ -11,7 +11,7 @@ namespace NoteTakingApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize] // Ensure the user is authenticated
+    [Authorize] 
     public class NotesController : ControllerBase
     {
         private readonly string _connectionString;
@@ -90,7 +90,7 @@ namespace NoteTakingApp.Controllers
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 UserId = userId,
-                Status = noteDto.Status ?? true // Default to true (active) if not provided
+                Status = noteDto.Status ?? true 
             };
 
             using (var connection = new SqlConnection(_connectionString))
