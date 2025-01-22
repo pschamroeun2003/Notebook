@@ -148,8 +148,6 @@
 <script lang="ts">
 import axios from '@/axios';
 import Swal from 'sweetalert2';
-
-
 interface Note {
     id: number;
     title: string;
@@ -260,7 +258,7 @@ export default {
 
 
         async addNote(): Promise<void> {
-            if (this.newNote.title && this.newNote.content) {
+            if (this.newNote.title ) {
                 if (!this.jwtToken || !this.userId) {
                     console.error('Token or User ID is missing or invalid');
                     Swal.fire({
@@ -279,7 +277,7 @@ export default {
                     };
                     await axios.post('/api/Notes', newNote, {
                         headers: {
-                            'Accept': 'application/json, text/plain, */*',
+                            'Accept': 'application/json',
                             Authorization: `Bearer ${this.jwtToken}`,
                         },
                     });
@@ -328,7 +326,7 @@ export default {
             this.showModalRead = false;
         },
         async updateNote(): Promise<void> {
-            if (this.oldNote.title && this.oldNote.content && this.editingNoteId) {
+            if (this.oldNote.title && this.editingNoteId) {
                 if (!this.jwtToken || !this.userId) {
                     console.error('Token or User ID is missing or invalid');
                     Swal.fire({

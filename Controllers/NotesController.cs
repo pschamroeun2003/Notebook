@@ -65,7 +65,6 @@ namespace NoteTakingApp.Controllers
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error fetching notes: {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>
                 {
                     Status = "Error",
@@ -151,7 +150,6 @@ namespace NoteTakingApp.Controllers
 
                 var updateQuery = "UPDATE Notes SET Title = @Title, Content = @Content, UpdatedAt = @UpdatedAt, Status = @Status WHERE Id = @Id AND UserId = @UserId";
                 await connection.ExecuteAsync(updateQuery, new { note.Title, note.Content, note.UpdatedAt, note.Status, note.Id, UserId = userId });
-
                 var updatedNote = new NoteDTO
                 {
                     Id = note.Id,
@@ -161,17 +159,14 @@ namespace NoteTakingApp.Controllers
                     UpdatedAt = note.UpdatedAt,
                     Status = note.Status
                 };
-
                 var response = new ApiResponse<NoteDTO>
                 {
                     Status = "Success",
                     Data = updatedNote
                 };
-
                 return Ok(response);
             }
         }
-
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponse<string>>> DeleteNote(int id)
         {
